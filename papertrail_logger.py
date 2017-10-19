@@ -22,8 +22,8 @@ class PapertrailContextFilter(logging.Filter):
 
     def __init__(self, hostname, jobname, *args, **kwargs):
         # To conform to log coloration on PT, which splits by whitespace
-        self.hostname = hostname.replace(' ', '')
-        self.jobname = jobname.replace(' ', '')
+        self.hostname = hostname.replace(" ", "")
+        self.jobname = jobname.replace(" ", "")
         super().__init__(*args, **kwargs)
 
     def filter(self, record):
@@ -67,5 +67,5 @@ def get_logger(destination_address, destination_port, jobname,
 
     #syslog.close() ?
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
