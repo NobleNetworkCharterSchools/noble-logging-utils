@@ -5,7 +5,7 @@ from distutils.core import setup
 setup(
     name="noble_logging_utils",
     version="0.1",
-    packages=[],
+    packages=["noble_logging_utils", ],
     #scripts=["bin/emulambda"],
     url="https://www.github.com/noblenetworkcharterschools/noble-logging-utils",
     author="Noble Network of Charter Schools",
