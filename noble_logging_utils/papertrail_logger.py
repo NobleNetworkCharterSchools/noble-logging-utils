@@ -18,6 +18,10 @@ SF_LOG_LIVE = "salesforce-live"
 SF_LOG_SANDBOX = "salesforce-sandbox"
 
 
+class MissingCredentials(Exception):
+    """No credentials found in env or logging_secrets module"""
+
+
 class PapertrailContextFilter(logging.Filter):
 
     def __init__(self, hostname, jobname, *args, **kwargs):
@@ -32,16 +36,13 @@ class PapertrailContextFilter(logging.Filter):
         return True
 
 
-def get_logger(destination_address, destination_port, jobname,
-               hostname=SF_LOCAL_HOSTNAME):
+def get_logger(jobname, hostname=SF_LOCAL_HOSTNAME):
     """
     Creates a logger with the `PapertrailContextFilter`, pointed at an
     address and port of a PT log destination.
 
     Positional arguments:
 
-    * destination_address: target web address of logging destination
-    * destination_port:    target port
     * jobname:             job name to display in the Papertrail log stream
 
     Available keyword arguments:
@@ -53,6 +54,7 @@ def get_logger(destination_address, destination_port, jobname,
     logger.setLevel(logging.DEBUG) # allow all by default
     pt_filter = PapertrailContextFilter(hostname, jobname)
     logger.addFilter(pt_filter)
+    destination_address, destination_port = _get_logging_destination()
     syslog = SysLogHandler(address=(destination_address, destination_port))
     formatter = logging.Formatter(
         PAPERTRAIL_LOG_FORMAT, datefmt=PAPERTRAIL_DATE_FORMAT
@@ -66,6 +68,30 @@ def get_logger(destination_address, destination_port, jobname,
     return logger
 
     #syslog.close() ?
+
+
+def _get_logging_destination():
+    """Get PaperTrail logging host and port from environment or secrets file.
+
+    Look for PAPERTRAIL_HOST and PAPERTRAIL_PORT in environment, and failing
+    that, look for local logging_secrets module.
+
+    :return: tuple (<destination address>, <destination port>)
+    :rtype: tuple (str, int)
+    """
+    try:
+        destination = os.environ["PAPERTRAIL_HOST"]
+        port = os.environ["PAPERTRAIL_PORT"]
+    except KeyError:
+        try:
+            import logging_secrets
+            destination = logging_secrets.PAPERTRAIL_HOST
+            port = logging_secrets.PAPERTRAIL_PORT
+        except (ImportError, AttributeError) as e:
+            raise MissingCredentials("Logging destination not found in env or logging module") from e
+
+    return (destination, port)
+
 
 if __name__ == "__main__":
     pass
