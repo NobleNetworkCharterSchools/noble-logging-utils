@@ -7,7 +7,7 @@ http://help.papertrailapp.com/kb/configuration/configuring-centralized-logging-f
 
 import logging
 from logging.handlers import SysLogHandler
-from os import path
+import os
 import sys
 
 PAPERTRAIL_LOG_FORMAT = "%(asctime)s %(hostname)s %(jobname)s: [%(levelname)s] %(message)s"
