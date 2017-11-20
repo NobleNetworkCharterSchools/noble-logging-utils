@@ -81,12 +81,12 @@ def _get_logging_destination():
     """
     try:
         destination = os.environ["PAPERTRAIL_HOST"]
-        port = os.environ["PAPERTRAIL_PORT"]
+        port = int(os.environ["PAPERTRAIL_PORT"])
     except KeyError:
         try:
             import logging_secrets
             destination = logging_secrets.PAPERTRAIL_HOST
-            port = logging_secrets.PAPERTRAIL_PORT
+            port = int(logging_secrets.PAPERTRAIL_PORT)
         except (ImportError, AttributeError) as e:
             raise MissingCredentials("Logging destination not found in env or logging module") from e
 
