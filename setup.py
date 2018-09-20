@@ -10,5 +10,7 @@ setup(
     url="https://www.github.com/noblenetworkcharterschools/noble-logging-utils",
     author="Noble Network of Charter Schools",
     description="Logging utilities",
-    install_requires=[],
+    install_requires=[
+        "structlog==18.2.0",
+    ]
 )
