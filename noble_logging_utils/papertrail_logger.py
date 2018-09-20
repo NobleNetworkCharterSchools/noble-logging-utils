@@ -43,7 +43,7 @@ def get_logger(jobname, hostname=SF_LOCAL_HOSTNAME):
 
     Positional arguments:
 
-    * jobname:             job name to display in the Papertrail log stream
+    * jobname: job name to display in the Papertrail log stream
 
     Available keyword arguments:
 
